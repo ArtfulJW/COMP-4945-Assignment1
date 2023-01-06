@@ -91,6 +91,12 @@ namespace Client {
                 s.Connect(ipe);
                 if (s.Connected) {
                     //do file upload process
+                    //Get user input
+                        //Validate user input
+                    //Build request
+                    //Send request
+                    //Get response
+                    //Parse response
                 }
                 s.Close();
             } catch (ArgumentNullException e) {
