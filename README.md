@@ -7,5 +7,5 @@ https://drive.google.com/file/d/13XUdjnfI1FiNC6mfpIDk1PUEhc1vqKmO/view?usp=shari
 https://github.com/ArtfulJW/COMP-4945-Assignment1
 
 ## Contributors
-Jay Wang
+Jay Wang, Kyle Ng, Jason Oh, Jun Mo An
 
