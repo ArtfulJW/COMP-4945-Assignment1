@@ -1,1 +1,7 @@
 /.vs/
+Client/obj/
+Client/bin/
+Server/obj/
+Server/bin/
+COMP-4945-Assignment1/obj/
+COMP-4945-Assignment1/bin/
