@@ -1,0 +1,15 @@
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\COMP-4945-Assignment1.exe
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\COMP-4945-Assignment1.deps.json
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\COMP-4945-Assignment1.runtimeconfig.json
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\COMP-4945-Assignment1.dll
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\COMP-4945-Assignment1.pdb
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.csproj.AssemblyReference.cache
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.AssemblyInfoInputs.cache
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.AssemblyInfo.cs
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.csproj.CoreCompileInputs.cache
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.dll
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\refint\COMP-4945-Assignment1.dll
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.pdb
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\COMP-4945-Assignment1.genruntimeconfig.cache
+C:\Users\jj554\Documents\BCIT\CST-Level-4\COMP-4945\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\obj\Debug\net6.0\ref\COMP-4945-Assignment1.dll
