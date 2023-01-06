@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\flare\\Desktop\\Bcit\\COMP  4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1.csproj",
-      "projectName": "COMP-4945-Assignment1",
-      "projectPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP  4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1.csproj",
+      "projectUniqueName": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
+      "projectName": "Server",
+      "projectPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
       "packagesPath": "C:\\Users\\flare\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP  4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
+      "outputPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\flare\\AppData\\Roaming\\NuGet\\NuGet.Config",
