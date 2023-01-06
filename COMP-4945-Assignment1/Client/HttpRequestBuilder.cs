@@ -17,7 +17,7 @@ namespace Client {
         private HttpRequestBuilder() {
         }
 
-        public static String buildMultipartRequest(String filePath, String caption, String date) {
+        public static string buildMultipartRequest(string filePath, string caption, string date) {
             // build the body before hand so we can get the content length
             StringBuilder bodyBuilder = new StringBuilder();
             buildBody(bodyBuilder, filePath, caption, date);
@@ -45,7 +45,7 @@ namespace Client {
             return reqBuilder.ToString();
         }
 
-        private static void buildBody(StringBuilder bodyBuilder, String filePath, String caption, String date) {
+        private static void buildBody(StringBuilder bodyBuilder, string filePath, string caption, string date) {
             bodyBuilder.Append("--").Append(BOUNDARY).Append("\r\n");
 
             // parse the file
@@ -64,17 +64,18 @@ namespace Client {
             bodyBuilder.Append("--").Append(BOUNDARY).Append("--\r\n");
         }
 
-        private static bool buildFile(StringBuilder bodyBuilder, String filePath) {
-            if (!File.Exists(filePath)) {
+        private static bool buildFile(StringBuilder bodyBuilder, string filePath) {
+            /*
+             * if (!File.Exists(filePath)) {
                 Console.WriteLine("File not found");
                 return false;
             }
          
-            
+            */
             try {
                 // read the file and store it as a string
                 FileStream fis = File.OpenRead(filePath);
-                String fileName = Path.GetFileName(filePath);
+                string fileName = Path.GetFileName(filePath);
                 byte[] fileArray = new byte[fis.Length];
                 fis.Read(fileArray, 0, fileArray.Length);
                 fis.Close();
@@ -95,13 +96,13 @@ namespace Client {
             }
         }
 
-        private static void buildContentType(StringBuilder bodyBuilder, String filePath) {
+        private static void buildContentType(StringBuilder bodyBuilder, string filePath) {
             int index = 0;
             while (filePath[index] != '.') {
                 index++;
             }
-            String fileType = filePath.Substring(index + 1, filePath.Length);
-            String contentType = "?";
+            string fileType = filePath.Substring(index + 1, filePath.Length);
+            string contentType = "?";
             switch (fileType) {
                 case "png":
                     contentType = "image/png";
