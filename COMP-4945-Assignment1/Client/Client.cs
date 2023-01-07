@@ -91,10 +91,10 @@ namespace Client {
 			Byte[] bytesReceived = new Byte[1];
 			string a = "";
 			while (true) {
+				int recv;
 				//Read one byte from socket and get number of bytes read
-				int recv = s.Receive(bytesReceived, bytesReceived.Length, 0);
 				//If recv is 0 the connection is closed
-				bool isClosed = (recv == 0);
+				bool isClosed = ((recv = s.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
 				//Check if server connection closed or end line received
 				if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0')) {
 					// Exit while loop
@@ -110,15 +110,15 @@ namespace Client {
 			do {
 				Console.WriteLine("Enter file path for image: ");
 				filePath = Console.ReadLine();
-			} while (Validator.isValidFilePath(filePath));
+			} while (!Validator.isValidFilePath(filePath));
 			do {
 				Console.WriteLine("Enter caption for image: ");
 				caption = Console.ReadLine();
-			} while (Validator.isValidCaption(caption));
+			} while (!Validator.isValidCaption(caption));
 			do {
 				Console.WriteLine("Enter date for image: ");
 				date = Console.ReadLine();
-			} while (Validator.isValidDate(date));
+			} while (!Validator.isValidDate(date));
 			
 		}
 

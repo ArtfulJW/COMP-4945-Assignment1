@@ -102,7 +102,7 @@ namespace Client {
 			while (filePath[index] != '.') {
 				index++;
 			}
-			string fileType = filePath.Substring(index + 1, filePath.Length);
+			string fileType = filePath.Substring(index + 1);
 			string contentType = "?";
 			switch (fileType) {
 				case "png":
