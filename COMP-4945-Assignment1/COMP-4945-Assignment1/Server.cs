@@ -119,34 +119,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
+
 // Namespace is a container for related classes
-namespace Program {
+namespace Server {
     public class Program {
 
-        // Member Variables
-        Socket socket;
-
-        // Constructor
-        public Program(Socket s)
-        {
-            this.socket = s;
-        }
-
-        // Delegate Method
-        public void delegateThreadMethod() {
-            // Implement how each Thread deals with each client socket connection
-            // For now, test by sending simple message to connection
-
-            string html = "GET HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
-
-            byte[] message = System.Text.Encoding.ASCII.GetBytes(html + '\0');
-
-            socket.Send(message, message.Length, 0);
-
-            socket.Close();
-        }
 
         static void Main(string[] args) {
             try
@@ -177,11 +157,13 @@ namespace Program {
                     Socket client = serverSocket.Accept();
 
                     // Create 
-                    Program program = new Program(client);
-                    // Delegate Method
-                    Thread thread = new Thread(new ThreadStart(program.delegateThreadMethod));
-                    thread.Start();
+                    // Program program = new Program(client);
+                    ServerThread serverThread = new ServerThread(client);
 
+                    // Delegate Method
+                    Thread thread = new Thread(new ThreadStart(serverThread.processClient));
+                    thread.Start();
+                    Console.WriteLine("Started processClient");
                 }
                 // Close Server Socket Listener
                 serverSocket.Close();
