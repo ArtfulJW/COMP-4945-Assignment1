@@ -21,7 +21,7 @@
  * =======================
  */
 
-/*
+
 //* ================== DirServer.cs ==================
 using System;
 using System.IO;
@@ -108,7 +108,7 @@ public class DirListing {
             Console.WriteLine("Socket exception: {0}", e);
         }
     }
-}*/
+}
 //================== DirServer.cs ==================
 
 
@@ -116,18 +116,76 @@ public class DirListing {
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 // Namespace is a container for related classes
 namespace Program {
-    class Program {
+    public class Program {
 
-        public static void ExecuteServer() {
+        // Member Variables
+        Socket socket;
 
+        // Constructor
+        public Program(Socket s)
+        {
+            this.socket = s;
+        }
+
+        // Delegate Method
+        public void delegateThreadMethod() {
+            // Implement how each Thread deals with each client socket connection
+            // For now, test by sending simple message to connection
+
+            byte[] message = System.Text.Encoding.ASCII.GetBytes("Hello World" + '\0');
+
+            socket.Send(message, message.Length, 0);
+
+            socket.Close();
         }
 
         static void Main(string[] args) {
+            try
+            {
+                // Intended Endpoint Paramaters
+                int port = 8888;
+                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+
+                // Instantiate Endpoint
+                IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
+
+                // Create Server-side listener Socket
+                Socket serverSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+                // Bind Server Socket Listener to Endpoint
+                serverSocket.Bind(endPoint);
+
+                // Allow connections of up to 1;
+                serverSocket.Listen(2);
+                
+                // Infinite Loop to deal with incoming Socket Connections
+                while (true)
+                {
+
+                    // Accept Incoming client Socket connection 
+                    Socket client = serverSocket.Accept();
+
+                    // Create 
+                    Program program = new Program(client);
+                    // Delegate Method
+                    Thread thread = new Thread(new ThreadStart(program.delegateThreadMethod));
+
+
+                }
+                // Close Server Socket Listener
+                serverSocket.Close();
+
+            } catch
+            {
+                Console.WriteLine("Socket Error.");
+            }
 
         }
     }
