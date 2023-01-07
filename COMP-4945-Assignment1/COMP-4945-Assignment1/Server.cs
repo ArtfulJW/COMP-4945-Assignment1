@@ -21,7 +21,7 @@
  * =======================
  */
 
-
+/*
 //* ================== DirServer.cs ==================
 using System;
 using System.IO;
@@ -108,7 +108,7 @@ public class DirListing {
             Console.WriteLine("Socket exception: {0}", e);
         }
     }
-}
+}*/
 //================== DirServer.cs ==================
 
 
