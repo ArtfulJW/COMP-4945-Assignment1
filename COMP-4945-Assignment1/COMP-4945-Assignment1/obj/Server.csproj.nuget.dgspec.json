@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj": {}
+    "C:\\Users\\Admin\\Desktop\\BCIT Classes\\COMP 4945\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj": {
+    "C:\\Users\\Admin\\Desktop\\BCIT Classes\\COMP 4945\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\BCIT Classes\\COMP 4945\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
-        "packagesPath": "C:\\Users\\flare\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
+        "projectPath": "C:\\Users\\Admin\\Desktop\\BCIT Classes\\COMP 4945\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\Desktop\\BCIT Classes\\COMP 4945\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\flare\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

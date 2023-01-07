@@ -11,7 +11,8 @@ namespace Client {
     internal class HttpRequestBuilder {
 
         public const string VERSION = "HTTP/1.1";
-        public const string BOUNDARY = "12345abcde";
+		public const string HOST = "HTTP/1.1";
+		public const string BOUNDARY = "12345abcde";
         private IPEndPoint ipe;
 
         private HttpRequestBuilder() {
@@ -34,7 +35,7 @@ namespace Client {
             reqBuilder.Append("Accept-Encoding: gzip, deflate, br").Append("\r\n");
             reqBuilder.Append("Connection: ").Append("keep-alive").Append("\r\n");
             reqBuilder.Append("Content-Type: ").Append("multipart/form-data; boundary=").Append(BOUNDARY).Append("\r\n");
-            reqBuilder.Append("Content-Length: ").Append(bodyBuilder.ToString().length()).Append("\r\n");
+            reqBuilder.Append("Content-Length: ").Append(bodyBuilder.ToString().Length).Append("\r\n");
 
             // split body from head
             reqBuilder.Append("\r\n");
