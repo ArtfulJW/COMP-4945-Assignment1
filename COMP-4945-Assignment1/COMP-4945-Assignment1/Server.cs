@@ -139,7 +139,9 @@ namespace Program {
             // Implement how each Thread deals with each client socket connection
             // For now, test by sending simple message to connection
 
-            byte[] message = System.Text.Encoding.ASCII.GetBytes("Hello World" + '\0');
+            string html = "GET HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
+
+            byte[] message = System.Text.Encoding.ASCII.GetBytes(html + '\0');
 
             socket.Send(message, message.Length, 0);
 
@@ -163,11 +165,13 @@ namespace Program {
                 serverSocket.Bind(endPoint);
 
                 // Allow connections of up to 1;
-                serverSocket.Listen(2);
+                serverSocket.Listen(10);
                 
                 // Infinite Loop to deal with incoming Socket Connections
                 while (true)
                 {
+
+                    Console.WriteLine("Waiting for a connection...");
 
                     // Accept Incoming client Socket connection 
                     Socket client = serverSocket.Accept();
@@ -176,15 +180,15 @@ namespace Program {
                     Program program = new Program(client);
                     // Delegate Method
                     Thread thread = new Thread(new ThreadStart(program.delegateThreadMethod));
-
+                    thread.Start();
 
                 }
                 // Close Server Socket Listener
                 serverSocket.Close();
 
-            } catch
+            } catch (SocketException e)
             {
-                Console.WriteLine("Socket Error.");
+                Console.WriteLine("Socket exception: {0}", e);
             }
 
         }
