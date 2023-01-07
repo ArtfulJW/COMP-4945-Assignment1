@@ -20,6 +20,9 @@ namespace Server
         public void post(Request request, Response response)
         {
             // TODO: Implement Image Uploading
+
+
+
         }
     }
 }
