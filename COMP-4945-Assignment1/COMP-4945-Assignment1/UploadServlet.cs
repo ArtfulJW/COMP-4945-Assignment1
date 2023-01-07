@@ -12,7 +12,7 @@ namespace Server
         public void get(Request request, Response response)
         {
             // Serve up HTML to browser
-            if (request.getRequestType() == "GET" && request.getUserAgent() == "Browser")
+            if (    request.getRequestType()    == "GET" &&     request.getUserAgent()     == "Browser")
             {
                 response.renderHTML();
             }
