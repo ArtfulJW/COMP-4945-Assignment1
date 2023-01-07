@@ -8,5 +8,7 @@ namespace Server
 {
     public interface Servlet
     {
+        public void get(Request request, Response response);
+        public void post(Request request, Response response);
     }
 }
