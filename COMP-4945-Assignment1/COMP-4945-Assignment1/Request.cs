@@ -14,6 +14,7 @@ namespace Server
         string requestType = null;
         string userAgent = null;
         string boundary = null;
+        byte[] imageByteData = null;
         public Request(Socket socket) { this.socket = socket; }
         public void parsePayload()
         {
@@ -66,6 +67,9 @@ namespace Server
                     boundary = sub[1];
                     Console.WriteLine("BOUNDARY: " + boundary);
                 }
+
+
+
             }
             
             //string[] header = req[0].Split(' ');
