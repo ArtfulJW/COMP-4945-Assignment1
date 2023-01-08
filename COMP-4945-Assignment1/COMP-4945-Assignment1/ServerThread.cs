@@ -61,7 +61,7 @@ namespace Server
 
             // Error here, never serves up HTML because of here
             //request.parsePayload(); 
-            // Console.WriteLine("RECIEVED MESSAGE\n" + buildRequestMessage());
+            Console.WriteLine("RECIEVED MESSAGE\n" + buildRequestMessage());
             
 
             Response response = new Response(socket);
@@ -84,6 +84,7 @@ namespace Server
                 int recv;
                 //If recv is 0 the connection is closed
                 bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
+                Console.WriteLine(recv);
                 //Check if client connection closed or end line received
                 if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0'))
                 {
@@ -93,15 +94,35 @@ namespace Server
                 }
                 // string a should now have the whole http request saved.s
                 recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+                int x = 0;
 
+                // Check for end of transmission
+                if (recievedMessage.Length >= 4)
+                {
+                    for (int i = 1; i < 5; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            if (recievedMessage[recievedMessage.Length - i] == '\r')
+                            {
+                                x++;
+                            }
+                        } else
+                        {
+                            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
+                            x++;
+                        }
+                    }
+                    if (x == 4)
+                    {
+                        Console.WriteLine("EOF");
+                        break;
+                    }
+                }
             }
             return recievedMessage;
         }
 
-        public async Task processConnection()
-        {
-
-        }
 
     }
 }
