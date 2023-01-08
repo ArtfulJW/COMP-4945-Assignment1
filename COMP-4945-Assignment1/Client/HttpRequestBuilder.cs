@@ -11,60 +11,94 @@ namespace Client {
     internal class HttpRequestBuilder {
 
         public const string VERSION = "HTTP/1.1";
+        public const string HOST = "HTTP/1.1";
         public const string BOUNDARY = "12345abcde";
         private IPEndPoint ipe;
 
         private HttpRequestBuilder() {
         }
 
-        public static string buildMultipartRequest(string filePath, string caption, string date) {
+        public static byte[] buildMultipartRequest(string filePath, string caption, string date) {
             // build the body before hand so we can get the content length
-            StringBuilder bodyBuilder = new StringBuilder();
+            //StringBuilder bodyBuilder = new StringBuilder();
+            List<byte> bodyBuilder = new List<byte>();
             buildBody(bodyBuilder, filePath, caption, date);
 
-            StringBuilder reqBuilder = new StringBuilder();
+            List<byte> reqBuilder = new List<byte>();
 
             // request line
-            reqBuilder.Append("POST ").Append("/ ").Append(VERSION).Append("\r\n");
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("POST "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("/ "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes(VERSION));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // headers
-            reqBuilder.Append("User-Agent: ").Append("CLI").Append("\r\n");
-            reqBuilder.Append("Accept: ").Append("*/*").Append("\r\n");
-            reqBuilder.Append("Host: ").Append(HOST).Append("\r\n");
-            reqBuilder.Append("Accept-Encoding: gzip, deflate, br").Append("\r\n");
-            reqBuilder.Append("Connection: ").Append("keep-alive").Append("\r\n");
-            reqBuilder.Append("Content-Type: ").Append("multipart/form-data; boundary=").Append(BOUNDARY).Append("\r\n");
-            reqBuilder.Append("Content-Length: ").Append(bodyBuilder.ToString().length()).Append("\r\n");
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("User-Agent: "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("CLI"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Accept: "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("*/*"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Host: "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes(HOST));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Accept-Encoding: gzip, deflate, br"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Connection: "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("keep-alive"));
+
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Type: "));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("multipart/form-data; boundary="));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Length: "));
+            reqBuilder.AddRange(bodyBuilder);
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // split body from head
-            reqBuilder.Append("\r\n");
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // body (parameters)
-            reqBuilder.Append(bodyBuilder);
+            reqBuilder.AddRange(bodyBuilder);
 
-            return reqBuilder.ToString();
+            return reqBuilder.ToArray();
         }
 
-        private static void buildBody(StringBuilder bodyBuilder, string filePath, string caption, string date) {
-            bodyBuilder.Append("--").Append(BOUNDARY).Append("\r\n");
+        //private static void buildBody(StringBuilder bodyBuilder, string filePath, string caption, string date) {
+        private static void buildBody(List<byte> bodyBuilder, string filePath, string caption, string date) {
+
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // parse the file
             buildFile(bodyBuilder, filePath);
 
             // parse the caption
-            bodyBuilder.Append("Content-Disposition: form-data; name=\"caption\"").Append("\r\n");
-            bodyBuilder.Append("\r\n");
-            bodyBuilder.Append(caption).Append("\r\n");
-            bodyBuilder.Append("--").Append(BOUNDARY).Append("\r\n");
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Disposition: form-data; name=\"caption\""));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(caption));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // parse the date
-            bodyBuilder.Append("Content-Disposition: form-data; name=\"date\"").Append("\r\n");
-            bodyBuilder.Append("\r\n");
-            bodyBuilder.Append(date).Append("\r\n");
-            bodyBuilder.Append("--").Append(BOUNDARY).Append("--\r\n");
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Disposition: form-data; name=\"date\""));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(date));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--"));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--\r\n"));
         }
 
-        private static bool buildFile(StringBuilder bodyBuilder, string filePath) {
+        //private static void buildFile(StringBuilder bodyBuilder, string filePath) {
+        private static void buildFile(List<byte> bodyBuilder, string filePath) {
+
             /*
              * if (!File.Exists(filePath)) {
                 Console.WriteLine("File not found");
@@ -81,27 +115,31 @@ namespace Client {
                 fis.Close();
 
                 // add content disposition
-                bodyBuilder.Append("Content-Disposition: form-data; name=\"fileName\"; filename=\"").Append(fileName).Append("\"\r\n");
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Disposition: form-data; name=\"fileName\"; filename=\""));
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes(fileName));
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\"\r\n"));
                 // add the content type
                 buildContentType(bodyBuilder, filePath);
 
                 // add the file string as the body
-                bodyBuilder.Append(Encoding.UTF8.GetString(fileArray)).Append("\r\n");
+                bodyBuilder.AddRange(fileArray);
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
-                bodyBuilder.Append("--").Append(BOUNDARY).Append("\r\n");
-                return true;
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--"));
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
+                bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
             } catch (Exception e) {
                 Console.WriteLine(e);
-                return false;
             }
         }
 
-        private static void buildContentType(StringBuilder bodyBuilder, string filePath) {
+        //private static void buildContentType(StringBuilder bodyBuilder, string filePath) {
+        private static void buildContentType(List<byte> bodyBuilder, string filePath) {
             int index = 0;
             while (filePath[index] != '.') {
                 index++;
             }
-            string fileType = filePath.Substring(index + 1, filePath.Length);
+            string fileType = filePath.Substring(index + 1);
             string contentType = "?";
             switch (fileType) {
                 case "png":
@@ -115,7 +153,10 @@ namespace Client {
                     contentType = "file/text";
                     break;
             }
-            bodyBuilder.Append("Content-Type: ").Append(contentType).Append(fileType).Append("\r\n\r\n");
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Type: "));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(contentType));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(fileType));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n\r\n"));
         }
 
     }
