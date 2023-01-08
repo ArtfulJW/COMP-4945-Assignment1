@@ -72,12 +72,53 @@ public class DirClient {
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Configuration;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Client {
     internal class Client {
+        private IPEndPoint ipe;
+        public Client(string ipaddr, int port) {
+            this.ipe = new IPEndPoint(IPAddress.Parse(ipaddr), port);
+        }
+
+        void uploadImage() {
+            try {
+                Socket s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                s.Connect(ipe);
+                if (s.Connected) {
+                    //do file upload process
+                    //Get user input
+                        //Validate user input
+                    //Build request
+                    //Send request
+                    //Get response
+                    //Parse response
+                }
+                s.Close();
+            } catch (ArgumentNullException e) {
+                throw new Exception(@"[ArguementNullException From Sync.DirClient]", e);
+            } catch (SocketException e) {
+                throw new Exception(@"[SocketException From Sync.DirClient]", e);
+            }
+        }
         static void Main(string[] args) {
+            //Promt for server connection
+            /*
+             * Console.WriteLine("Enter Ip Address of Server: ");
+             * string address = Console.ReadLine();
+             * Console.WriteLine("Enter Port of Server: ");
+             * int port = Convert.ToInt32(Console.ReadLine());
+             * Client client = new Client(address, port);
+            */
+
+            Client client = new Client("127.0.0.1", 8888);
+            client.uploadImage();
+
+            Console.Read();
         }
     }
 }
