@@ -155,11 +155,10 @@ namespace Client {
                 //Validate user input
                 //Build request
                 byte[] multipartRequest = HttpRequestBuilder.buildMultipartRequest(filePath, caption, date);
-				Console.WriteLine(multipartRequest.ToString());
                 s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 				s.Connect(ipe);
 				if (s.Connected) {
-                    Console.WriteLine("Connected");
+                    //Console.WriteLine("Connected");
                     //Send request
                     sendRequest(multipartRequest);
 					//Get response
@@ -176,12 +175,11 @@ namespace Client {
                         }
                     }
                     //Parse response
-					Console.WriteLine(Encoding.ASCII.GetString(bytesReceived, 0, bytesReceived.Length));
-                    //parseResponse(bytesReceived);
-                    
-                    
-                    //dumpSocket();
-                }
+					//Console.WriteLine(Encoding.ASCII.GetString(bytesReceived, 0, bytesReceived.Length));
+					parseResponse(bytesReceived);
+
+					//dumpSocket();
+				}
 				s.Close();
 			}
 			catch (ArgumentNullException e) {
@@ -203,7 +201,7 @@ namespace Client {
 
 			Client client = new Client("127.0.0.1", 8000);
 			client.uploadImage();
-			Console.WriteLine("Press any key to close window");
+			Console.WriteLine("Press Enter to close window");
 			Console.Read();
 		}
 	}
