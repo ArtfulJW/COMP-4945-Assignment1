@@ -80,8 +80,10 @@ using System.Threading.Tasks;
 
 namespace Client {
 	internal class Client {
-		private IPEndPoint ipe;
+        const int BUFFER_SIZE = 1024;
+        private IPEndPoint ipe;
 		private Socket s;
+
 		public Client(string ipaddr, int port) {
 			this.ipe = new IPEndPoint(IPAddress.Parse(ipaddr), port);
 		}
@@ -121,24 +123,52 @@ namespace Client {
 			} while (!Validator.isValidDate(date));
 			
 		}
+		/**
+		 *	Wrapper that converts request string to byte array msg then sends msg over socket
+		 */
+		private void sendRequest(string request) {
+			byte[] msg = Encoding.ASCII.GetBytes(request);
+            s.Send(msg, msg.Length, 0) ;
+		}
+
+        /**
+		 *	Wrapper that sends msg over socket
+		 */
+        private void sendRequest(byte[] msg) {
+            s.Send(msg, msg.Length, 0);
+        }
+
+        private void parseResponse(byte[] response) {
+			HttpResponseParser parser = new HttpResponseParser(response);
+			parser.parse();
+		}
 
 		private void uploadImage() {
 			try {
-				s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+               
+                //do file upload process
+                //Get user input
+                string filePath = String.Empty;
+                string caption = String.Empty;
+                string date = String.Empty;
+                getUserInput(ref filePath, ref caption, ref date);
+                //Validate user input
+                //Build request
+                byte[] multipartRequest = HttpRequestBuilder.buildMultipartRequest(filePath, caption, date);
+				Console.WriteLine(multipartRequest);
+                s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 				s.Connect(ipe);
 				if (s.Connected) {
-					Console.WriteLine("Connected");
-					//do file upload process
-					//Get user input
-					string filePath = String.Empty;
-					string caption = String.Empty;
-					string date = String.Empty;
-					getUserInput(ref filePath, ref caption, ref date);
-					//Validate user input
-					//Build request
-					HttpRequestBuilder.buildMultipartRequest(filePath, caption, date);
-					//Send request
+                    Console.WriteLine("Connected");
+                    //Send request
+                    sendRequest(multipartRequest);
 					//Get response
+					//byte[] bytesReceived = new byte[BUFFER_SIZE];
+					//int rval = s.Receive(bytesReceived, bytesReceived.Length, 0);
+					//while (rval > 0) {
+					//	Console.WriteLine("Response %s\n", bytesReceived);
+					//	parseResponse(bytesReceived);
+					//}
 					dumpSocket();
 				}
 				s.Close();
@@ -160,9 +190,9 @@ namespace Client {
 			 * Client client = new Client(address, port);
 			*/
 
-			Client client = new Client("127.0.0.1", 8888);
+			Client client = new Client("127.0.0.1", 8000);
 			client.uploadImage();
-
+			Console.WriteLine("Press any key to close window");
 			Console.Read();
 		}
 	}
