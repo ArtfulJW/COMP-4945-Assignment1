@@ -9,24 +9,30 @@ namespace Server
 {
     public class Request
     {
-        Socket cls = null;
-        public Request(Socket socket) { this.cls = socket; }
-        public void threadMethod()
+        Socket socket = null;
+        public Request(Socket socket) { this.socket = socket; }
+        public void parsePayload()
         {
+            // Build Recieved Message
+            /*
             Byte[] bytesReceived = new Byte[1];
             string a = "";
             while (true)
             {
-                if ((cls.Receive(bytesReceived, bytesReceived.Length, 0) == 0) ||
+                if ((socket.Receive(bytesReceived, bytesReceived.Length, 0) == 0) ||
                  (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\r'))
                 {
                     break;
                 }
                 a += Encoding.ASCII.GetString(bytesReceived, 0, 1);
             }
-            Console.WriteLine(a + " this ");
+            */
 
-            string[] req = a.Split('\n');
+            string receivedMessage = buildRequestMessage();
+            Console.WriteLine(receivedMessage + " this ");
+
+
+            string[] req = receivedMessage.Split('\n');
             string[] header = req[0].Split(' ');
             req = req.Skip(1).ToArray();
             string reqType = header[0];
@@ -97,8 +103,8 @@ namespace Server
             //foreach (FileInfo fri in fiArr) { files = files + fri.Name; }
             byte[] msg = Encoding.ASCII.GetBytes(files);
 
-            cls.Send(msg, msg.Length, 0);
-            cls.Close();
+            socket.Send(msg, msg.Length, 0);
+            socket.Close();
         }
 
         // TODO: Implement getters
@@ -119,6 +125,33 @@ namespace Server
         {
             byte[] ar = new byte[2];
             return ar;
+        }
+
+        public string buildRequestMessage()
+        {
+            //Set character buffer of one byte
+            byte[] bytesReceived = new byte[1];
+            string recievedMessage = "";
+
+            // Infinitely Recurse - build message
+            while (true)
+            {
+                //Read one byte from socket and get number of bytes read
+                int recv = socket.Receive(bytesReceived, bytesReceived.Length, 0);
+                //If recv is 0 the connection is closed
+                bool isClosed = (recv == 0);
+                //Check if client connection closed or end line received
+                if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0'))
+                {
+                    Console.WriteLine("Connection Closed");
+                    // Exit while loop
+                    break;
+                }
+                // string a should now have the whole http request saved.s
+                recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+            }
+            //Console.WriteLine(recievedMessage);
+            return recievedMessage;
         }
 
     }

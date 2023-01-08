@@ -31,6 +31,19 @@ namespace Server
 
             // Recieve and determine Request
 
+            //string recievedMessage = buildRequestMessage();
+
+            //string html = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
+
+            //byte[] message = System.Text.Encoding.ASCII.GetBytes(html + '\0');
+            //socket.Send(message, message.Length, 0);
+
+            //Console.WriteLine(recievedMessage);
+
+            //socket.Close();
+
+
+
             //string html = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
 
             //byte[] message = System.Text.Encoding.ASCII.GetBytes(html + '\0');
@@ -45,12 +58,17 @@ namespace Server
 
             // Forming parameters for interaction
             Request request = new Request(socket);
+
+            // Error here, never serves up HTML because of here
+            //request.parsePayload(); 
+            // Console.WriteLine("RECIEVED MESSAGE\n" + buildRequestMessage());
+            
+
+            Response response = new Response(socket);
             UploadServlet uploadServlet = new UploadServlet();
-            Response response = new Response(socket, uploadServlet);
 
             // Execute
             uploadServlet.execute(request, response);
-
 
         }
 
@@ -63,10 +81,9 @@ namespace Server
             // Infinitely Recurse - build message
             while (true)
             {
-                //Read one byte from socket and get number of bytes read
-                int recv = socket.Receive(bytesReceived, bytesReceived.Length, 0);
+                int recv;
                 //If recv is 0 the connection is closed
-                bool isClosed = (recv == 0);
+                bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
                 //Check if client connection closed or end line received
                 if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0'))
                 {
@@ -76,9 +93,14 @@ namespace Server
                 }
                 // string a should now have the whole http request saved.s
                 recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+
             }
-            //Console.WriteLine(recievedMessage);
             return recievedMessage;
+        }
+
+        public async Task processConnection()
+        {
+
         }
 
     }

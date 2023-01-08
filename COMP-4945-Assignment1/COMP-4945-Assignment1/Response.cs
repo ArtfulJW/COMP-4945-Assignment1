@@ -13,13 +13,11 @@ namespace Server
         // Member Variables
         string indexHTML = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
         Socket socket = null;
-        Servlet servlet = null;
 
         // Constructor
-        public Response(Socket socket, Servlet servlet)
+        public Response(Socket socket)
         {
             this.socket = socket;
-            this.servlet = servlet;
         }
 
         public void renderHTML()

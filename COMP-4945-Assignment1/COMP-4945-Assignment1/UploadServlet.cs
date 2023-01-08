@@ -31,6 +31,7 @@ namespace Server
         public void get(Request request, Response response)
         {
             // Serve up HTML to browser
+            Console.WriteLine("Serving HTML");
             response.renderHTML();
         }
 

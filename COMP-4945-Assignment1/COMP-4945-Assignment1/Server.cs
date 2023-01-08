@@ -132,7 +132,7 @@ namespace Server {
             try
             {
                 // Intended Endpoint Paramaters
-                int port = 8888;
+                int port = 8000;
                 IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
 
                 // Instantiate Endpoint
@@ -162,6 +162,7 @@ namespace Server {
 
                     // Delegate Method
                     Thread thread = new Thread(new ThreadStart(serverThread.processClient));
+                    Console.WriteLine("Started Thread");
                     thread.Start();
                     Console.WriteLine("Started processClient");
                 }
