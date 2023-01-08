@@ -242,7 +242,6 @@ namespace Server
                     Console.WriteLine("Exit POST Request LOOP");
                     break;
                 }
-                Console.WriteLine("HELLLOOP");
             }
             return recievedMessage;
         }
