@@ -8,19 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\flare\\.nuget\\packages\\": {}
+    "C:\\Users\\james\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
+      "projectUniqueName": "C:\\Users\\james\\OneDrive\\Winter2023\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
       "projectName": "Server",
-      "projectPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
-      "packagesPath": "C:\\Users\\flare\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\flare\\Desktop\\Bcit\\COMP 4945 - Client Server\\Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
+      "projectPath": "C:\\Users\\james\\OneDrive\\Winter2023\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\Server.csproj",
+      "packagesPath": "C:\\Users\\james\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\james\\OneDrive\\Winter2023\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\COMP-4945-Assignment1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\flare\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\james\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
