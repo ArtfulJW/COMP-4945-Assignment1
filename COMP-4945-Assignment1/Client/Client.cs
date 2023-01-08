@@ -155,7 +155,7 @@ namespace Client {
                 //Validate user input
                 //Build request
                 byte[] multipartRequest = HttpRequestBuilder.buildMultipartRequest(filePath, caption, date);
-				Console.WriteLine(multipartRequest);
+				Console.WriteLine(multipartRequest.ToString());
                 s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 				s.Connect(ipe);
 				if (s.Connected) {
@@ -163,14 +163,25 @@ namespace Client {
                     //Send request
                     sendRequest(multipartRequest);
 					//Get response
-					//byte[] bytesReceived = new byte[BUFFER_SIZE];
-					//int rval = s.Receive(bytesReceived, bytesReceived.Length, 0);
-					//while (rval > 0) {
-					//	Console.WriteLine("Response %s\n", bytesReceived);
-					//	parseResponse(bytesReceived);
-					//}
-					dumpSocket();
-				}
+					byte[] bytesReceived = new byte[BUFFER_SIZE];
+                    while (true) {
+                        int recv;
+                        //Read one byte from socket and get number of bytes read
+                        //If recv is 0 the connection is closed
+                        bool isClosed = ((recv = s.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
+                        //Check if server connection closed or end line received
+                        if (isClosed) {
+                            // Exit while loop
+                            break;
+                        }
+                    }
+                    //Parse response
+					Console.WriteLine(Encoding.ASCII.GetString(bytesReceived, 0, bytesReceived.Length));
+                    //parseResponse(bytesReceived);
+                    
+                    
+                    //dumpSocket();
+                }
 				s.Close();
 			}
 			catch (ArgumentNullException e) {
