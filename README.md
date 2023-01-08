@@ -11,4 +11,8 @@ Jay Wang, Kyle Ng, Jason Oh, Jun Mo An
 
 ## Contributions
 Jay Wang
+Initial Setup of Project Structure (Server-Side)
 Set up Server, ServerThread, Response, Servlet, UploadServlet
+Able to recieve message from Browser until EOF without inf. looping
+buildrequestmessage()
+Worked on parsepayload()

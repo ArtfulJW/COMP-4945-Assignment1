@@ -11,7 +11,7 @@ namespace Server
 
         public void execute(Request request, Response response)
         {
-            if (request.getUserAgent() == "Browser")
+            if (request.getUserAgent() != "CLI")
             {
                 switch (request.getRequestType()) {
                     case "GET":

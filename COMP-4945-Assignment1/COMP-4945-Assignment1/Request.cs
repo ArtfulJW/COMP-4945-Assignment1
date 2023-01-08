@@ -10,6 +10,8 @@ namespace Server
     public class Request
     {
         Socket socket = null;
+        string requestType = null;
+        string userAgent = null;
         public Request(Socket socket) { this.socket = socket; }
         public void parsePayload()
         {
@@ -28,16 +30,41 @@ namespace Server
             }
             */
 
+            // Recieved Payload
             string receivedMessage = buildRequestMessage();
-            Console.WriteLine(receivedMessage + " this ");
+            // Console.WriteLine(receivedMessage);
 
 
             string[] req = receivedMessage.Split('\n');
-            string[] header = req[0].Split(' ');
-            req = req.Skip(1).ToArray();
-            string reqType = header[0];
-            string URL = header[1];
-            string version = header[2];
+
+            foreach(string substring in req)
+            {
+                Console.WriteLine("STRING: " + substring);   
+
+                if (substring.Contains("GET"))
+                {
+                    requestType = "GET";
+                    Console.WriteLine("THIS REQUEST IS: " + requestType);
+                } else if (substring.Contains("POST")) {
+                    requestType = "POST";
+                    Console.WriteLine("THIS REQUEST IS: " + requestType);
+                }
+
+                if (substring.Contains("User-Agent:")) 
+                {
+                    Console.WriteLine(substring);
+                    string[] sub = substring.Split(": ");
+                    Console.WriteLine("USERAGENT: " + sub[1]);
+                    userAgent = sub[1];
+                }
+
+            }
+            
+            //string[] header = req[0].Split(' ');
+            //req = req.Skip(1).ToArray();
+            //string reqType = header[0];
+            //string URL = header[1];
+            //string version = header[2];
 
             //Console.WriteLine(req[0]);
             //Console.WriteLine(URL);
@@ -59,7 +86,7 @@ namespace Server
             {
                 if (line != null)
                 {
-                    Console.WriteLine(line + "a");
+                    // Console.WriteLine(line + "a");
                     /*      string key = line.Split(':')[0].Trim();
                           string val = line.Split(':')[1].Trim();
                           Console.WriteLine(key);
@@ -98,31 +125,30 @@ namespace Server
             //</html>
             //""";
 
-            string files = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
+            //string files = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
 
             //foreach (FileInfo fri in fiArr) { files = files + fri.Name; }
-            byte[] msg = Encoding.ASCII.GetBytes(files);
+            //byte[] msg = Encoding.ASCII.GetBytes(files);
 
-            socket.Send(msg, msg.Length, 0);
-            socket.Close();
+            //socket.Send(msg, msg.Length, 0);
+            //socket.Close();
         }
 
         // TODO: Implement getters
         // Getters
         public string getRequestType()
         {
-            // Preliminary Test
-            return "GET";
+            return requestType;
         }
 
         public string getUserAgent()
         {
-            // Preliminary Test
-            return "Browser";
+            return userAgent;
         }
 
         public byte[] getImageByteCode()
         {
+            // Preliminary Test
             byte[] ar = new byte[2];
             return ar;
         }
@@ -136,10 +162,10 @@ namespace Server
             // Infinitely Recurse - build message
             while (true)
             {
-                //Read one byte from socket and get number of bytes read
-                int recv = socket.Receive(bytesReceived, bytesReceived.Length, 0);
+                int recv;
                 //If recv is 0 the connection is closed
-                bool isClosed = (recv == 0);
+                bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
+
                 //Check if client connection closed or end line received
                 if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0'))
                 {
@@ -149,8 +175,33 @@ namespace Server
                 }
                 // string a should now have the whole http request saved.s
                 recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+                int x = 0;
+
+                // Check for end of transmission
+                if (recievedMessage.Length >= 4)
+                {
+                    for (int i = 1; i < 5; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            if (recievedMessage[recievedMessage.Length - i] == '\r')
+                            {
+                                x++;
+                            }
+                        }
+                        else
+                        {
+                            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
+                            x++;
+                        }
+                    }
+                    if (x == 4)
+                    {
+                        Console.WriteLine("EOF");
+                        break;
+                    }
+                }
             }
-            //Console.WriteLine(recievedMessage);
             return recievedMessage;
         }
 
