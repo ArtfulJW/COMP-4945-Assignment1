@@ -100,5 +100,26 @@ namespace Server
             cls.Send(msg, msg.Length, 0);
             cls.Close();
         }
+
+        // TODO: Implement getters
+        // Getters
+        public string getRequestType()
+        {
+            // Preliminary Test
+            return "GET";
+        }
+
+        public string getUserAgent()
+        {
+            // Preliminary Test
+            return "Browser";
+        }
+
+        public byte[] getImageByteCode()
+        {
+            byte[] ar = new byte[2];
+            return ar;
+        }
+
     }
 }
