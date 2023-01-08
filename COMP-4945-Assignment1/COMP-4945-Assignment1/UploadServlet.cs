@@ -18,7 +18,7 @@ namespace Server
                         get(request, response);
                         break;
                     case "POST":
-                        post(request, response);
+                        //post(request, response);
                         break;
                 }
             }

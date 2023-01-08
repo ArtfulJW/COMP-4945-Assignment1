@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Server
         Socket socket = null;
         string requestType = null;
         string userAgent = null;
+        string boundary = null;
         public Request(Socket socket) { this.socket = socket; }
         public void parsePayload()
         {
@@ -32,7 +34,7 @@ namespace Server
 
             // Recieved Payload
             string receivedMessage = buildRequestMessage();
-            // Console.WriteLine(receivedMessage);
+            Console.WriteLine(receivedMessage);
 
 
             string[] req = receivedMessage.Split('\n');
@@ -57,7 +59,13 @@ namespace Server
                     Console.WriteLine("USERAGENT: " + sub[1]);
                     userAgent = sub[1];
                 }
-
+                if (substring.Contains("Content-Type: multipart/form-data"))
+                {
+                    Console.WriteLine("BOUNDARY: " + substring);
+                    string[] sub = substring.Split("; boundary=");
+                    boundary = sub[1];
+                    Console.WriteLine("BOUNDARY: " + boundary);
+                }
             }
             
             //string[] header = req[0].Split(' ');
@@ -158,6 +166,8 @@ namespace Server
             //Set character buffer of one byte
             byte[] bytesReceived = new byte[1];
             string recievedMessage = "";
+            string multipart = "";
+            bool gotBoundary = false;
 
             // Infinitely Recurse - build message
             while (true)
@@ -167,7 +177,7 @@ namespace Server
                 bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
 
                 //Check if client connection closed or end line received
-                if (isClosed || (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\0'))
+                if (isClosed && (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\n'))
                 {
                     Console.WriteLine("Connection Closed");
                     // Exit while loop
@@ -178,29 +188,57 @@ namespace Server
                 int x = 0;
 
                 // Check for end of transmission
-                if (recievedMessage.Length >= 4)
+                //if (recievedMessage.Length >= 4)
+                //{
+                //    for (int i = 1; i < 5; i++)
+                //    {
+                //        if (i % 2 == 0)
+                //        {
+                //            if (recievedMessage[recievedMessage.Length - i] == '\r')
+                //            {
+                //                x++;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
+                //            x++;
+                //        }
+                //    }
+                //    if (x == 4 && requestType == "GET")
+                //    {
+                //        Console.WriteLine("EOF");
+                //        break;
+                //    } else
+                //    {
+
+                //        // keep going until content length
+                //    }
+                //}
+
+                // End of GET Request
+                if (recievedMessage.Contains("\r\n\r\n") && recievedMessage.Contains("GET"))
                 {
-                    for (int i = 1; i < 5; i++)
-                    {
-                        if (i % 2 == 0)
-                        {
-                            if (recievedMessage[recievedMessage.Length - i] == '\r')
-                            {
-                                x++;
-                            }
-                        }
-                        else
-                        {
-                            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
-                            x++;
-                        }
-                    }
-                    if (x == 4)
-                    {
-                        Console.WriteLine("EOF");
-                        break;
-                    }
+                    break;
                 }
+
+                if (recievedMessage.Contains("Content-Type: multipart/form-data; boundary=") && recievedMessage.Length >= recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=") + 44 + 38 && gotBoundary == false)
+                {
+                    Console.WriteLine("HELL");
+                    string intermediate = recievedMessage.Substring(0, recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=")+44+38);
+                    string[] arr = intermediate.Split("Content-Type: multipart/form-data; boundary=");
+                    boundary = arr[1].Trim();
+                    gotBoundary = true;
+                    Console.WriteLine("BOUNDARY: " + boundary);
+
+                }
+
+                if (recievedMessage.Contains("--" + boundary + "--") && recievedMessage.Contains("POST") && gotBoundary == true)
+                {
+                    Console.WriteLine("Exit POST Request LOOP");
+                    break;
+                }
+                Console.WriteLine("HELLLOOP");
             }
             return recievedMessage;
         }
