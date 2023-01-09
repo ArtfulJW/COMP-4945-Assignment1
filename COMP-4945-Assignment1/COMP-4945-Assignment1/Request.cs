@@ -11,6 +11,8 @@ namespace Server
 {
     public class Request
     {
+        List<byte> b1 = new List<byte>();
+
         Socket socket = null;
         string requestType = null;
         string url = null;
@@ -29,7 +31,7 @@ namespace Server
             Console.WriteLine(receivedMessage);
 
 
-            string[] req = receivedMessage.Split("\r\n");
+            string[] req = receivedMessage.Split("\r\n\r\n");
             
 
             for (int i = 0; i < req.Length; i++)
@@ -64,31 +66,36 @@ namespace Server
 
                 if (req[i].Contains("Content-Type: image/jpeg"))
                 {
-                    string imgBytes = req[i + 1] + req[i + 2];
-                    imageByteData = Encoding.ASCII.GetBytes(imgBytes + '\0');
+                    string imgBytes = req[i + 1].Trim() + req[i + 2].Trim();
+                    imageByteData = Encoding.ASCII.GetBytes(imgBytes);
                     Console.WriteLine("JPEG IMG == "  + imgBytes);
 
                 }
 
+
                 if (req[i].Contains("Content-Type: image/png"))
                 {
-                    string imgBytes = req[i + 2] + "\r\n" + req[i + 3] + "\0";
+                    int k = 0;
+                    while (true)
+                    {
+                        if(b1[k] == '-' && b1[k + 1] == '-' && b1[k + 2] == '-')
+                        {
+                            break;
+                        } else
+                        {
+                            k++;
+                        }
 
-                   
-                    imageByteData = Encoding.Default.GetBytes(imgBytes);
-                    byte[] imageByteDataReverse = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAB8AAAARCAYAAAAlpHdJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC2SURBVEhL7ZXdDYMwDIS9YCTmQdnETBLm4CFTeIRrapLGRakQLTQP7cNJsXz4u/xIkIigl34YzgPBTbHZPKTZg8gjtHovdA18YThy4GXj2eg8uNUxOMMTpeRJAyMWQ94NT27tJflZEMbszbX1Bgl11k4AhVdThNZjWA06sJ5MzCEKUEOUsO8e+wN2lx1i141aw3wKf7pz/bAX3A75BrwObN35xfC9134YXjZhHmdL/x9LF3WEC25pAgP+h75e8AAAAABJRU5ErkJggg==");
-                
-                    
-                    Console.WriteLine("PNG IMAGE === \n " + imgBytes);
-                    Console.WriteLine("BASE 64 IMG CORRECT \n" + Convert.ToBase64String(imageByteDataReverse));
-                    Console.WriteLine("BASE 64 IMG \n" + Convert.ToBase64String(imageByteData));
-
+                    }
+                    b1.RemoveAt(0);
+                    b1.RemoveRange(k-3, b1.Count-k+3);
+                    imageByteData = b1.ToArray();                    
                 }
 
                 if (req[i].Contains("filename="))
                 {
-                    filename = req[i].Split("filename=")[1];
-                    filename = filename.Substring(1, filename.Length - 2);
+                    filename = req[i].Split("filename=\"")[1];
+                    filename = filename.Split('.')[0];
 
 
                 }
@@ -104,12 +111,7 @@ namespace Server
                     
                 }
 
-            }
-            Console.WriteLine("DATE ====" + date);
-            Console.WriteLine("CAPTION ===" + caption);
-            Console.WriteLine("FILE NAME ===" + filename);
-            Console.WriteLine("IMG BYTE ====");
-            
+            }   
             
         }
 
@@ -140,6 +142,7 @@ namespace Server
         {
             //Set character buffer of one byte
             byte[] bytesReceived = new byte[1];
+            
             string recievedMessage = "";
             string multipart = "";
             bool gotBoundary = false;
@@ -150,7 +153,7 @@ namespace Server
                 int recv;
                 //If recv is 0 the connection is closed
                 bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
-
+                
                 //Check if client connection closed or end line received
                 if (isClosed && (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\n'))
                 {
@@ -160,6 +163,17 @@ namespace Server
                 }
                 // string a should now have the whole http request saved.s
                 recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+                if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n"))
+                {
+                    try
+                    {
+                        b1.Add(bytesReceived[0]);             
+                    } catch
+                    {
+                        Console.WriteLine("FAIL ADD");
+                    }
+                }
+
                 int x = 0;
 
                 // Check for end of transmission
