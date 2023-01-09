@@ -66,7 +66,7 @@ namespace Server
 
             // Execute
             uploadServlet.execute(request, response);
-
+            socket.Close();
         }
 
         //public string buildRequestMessage()
