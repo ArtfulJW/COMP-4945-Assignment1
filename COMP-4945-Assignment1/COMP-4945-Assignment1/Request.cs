@@ -28,7 +28,7 @@ namespace Server
         {
             // Recieved Payload
             string receivedMessage = buildRequestMessage();
-            Console.WriteLine(receivedMessage);
+            //Console.WriteLine(receivedMessage);
 
 
             string[] req = receivedMessage.Split("\r\n\r\n");
@@ -36,7 +36,7 @@ namespace Server
 
             for (int i = 0; i < req.Length; i++)
             {
-                Console.WriteLine("STRING: " + req[i]);   
+                //Console.WriteLine("STRING: " + req[i]);   
                 if (i == 0)
                 {
                     string[] headerInfo = req[i].Split(' ');
@@ -47,7 +47,6 @@ namespace Server
                     Console.WriteLine("THIS REQUEST URL IS: " + url);
                     Console.WriteLine("THIS REQUEST VERSION IS: " + version);
                 }
-
                
                 if (req[i].Contains("User-Agent:")) 
                 {
@@ -56,24 +55,15 @@ namespace Server
                     Console.WriteLine("USERAGENT: " + sub[1]);
                     userAgent = sub[1];
                 }
+
                 if (req[i].Contains("Content-Type: multipart/form-data"))
-                {
-                    Console.WriteLine("BOUNDARY: " + req[i]);
-                    string[] sub = req[i].Split("; boundary=");
-                    boundary = sub[1];
-                    Console.WriteLine("BOUNDARY: " + boundary);
+                {                   
+                    string sub = req[i].Split("; boundary=")[1];
+                    boundary = sub.Split("\r\n")[0];
+                    Console.WriteLine("BOUNDARY: " + boundary + " END ");
                 }
-
-                if (req[i].Contains("Content-Type: image/jpeg"))
-                {
-                    string imgBytes = req[i + 1].Trim() + req[i + 2].Trim();
-                    imageByteData = Encoding.ASCII.GetBytes(imgBytes);
-                    Console.WriteLine("JPEG IMG == "  + imgBytes);
-
-                }
-
-
-                if (req[i].Contains("Content-Type: image/png"))
+                          
+                if (req[i].Contains("Content-Type: image/png") || req[i].Contains("Content-Type: image/jpeg"))
                 {
                     int k = 0;
                     while (true)
@@ -96,8 +86,6 @@ namespace Server
                 {
                     filename = req[i].Split("filename=\"")[1];
                     filename = filename.Split('.')[0];
-
-
                 }
 
                 if (req[i].Contains("caption"))
@@ -163,7 +151,7 @@ namespace Server
                 }
                 // string a should now have the whole http request saved.s
                 recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
-                if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n"))
+                if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n") || recievedMessage.Contains("Content-Type: image/jpeg\r\n\r\n"))
                 {
                     try
                     {
