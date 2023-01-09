@@ -7,18 +7,20 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Server
 {
-    public class UploadServlet : Servlet { 
+    public class UploadServlet : Servlet
+    {
 
         public void execute(Request request, Response response)
         {
             if (request.getUserAgent() != "CLI")
             {
-                switch (request.getRequestType()) {
+                switch (request.getRequestType())
+                {
                     case "GET":
                         get(request, response);
                         break;
                     case "POST":
-                        //post(request, response);
+                        post(request, response);
                         break;
                 }
             }
@@ -27,7 +29,7 @@ namespace Server
                 post(request, response);
             }
         }
-    
+
         public void get(Request request, Response response)
         {
             // Serve up HTML to browser
@@ -38,18 +40,49 @@ namespace Server
         public void post(Request request, Response response)
         {
             // TODO: Implement Image Uploading
-
+            bool fileOk = true;
             // Get current time 
-            DateTime currrentTime = DateTime.Now;
-            String fileName = currrentTime.ToString();
+            // DateTime currrentTime = DateTime.Now;
+            // String fileName = request.getFileName();
 
             // images FolderPath relative to this file.
-            string imageFolderPath = "..\\..\\image\\" + fileName + ".png";
+            string imageFolderPath = ".\\.\\images\\" + request.getFileName();
 
             // Convert ImageByteCode (byte[]) into string
-            string imageString = Encoding.UTF8.GetString(request.getImageByteCode());
+            // string imageString = Encoding.UTF8.GetString(request.getImageByteCode());
 
-            FileStream fs = File.Create(imageFolderPath);
+            try
+            {
+                using var writer = new BinaryWriter(File.OpenWrite(imageFolderPath));
+                writer.Write(request.getImageByteCode());
+            }
+            catch
+            {
+                Console.WriteLine("Failed to upload image");
+                fileOk = false;
+            }
+
+            // byte[] bytes = request.getImageByteCode();
+            // foreach ( byte b in bytes)  
+            // {  
+            //     Console.WriteLine(b);  
+            // }  
+
+
+            // try {
+            //     FileStream fs = File.Create(imageFolderPath);
+            // } catch {
+            //     Console.WriteLine("Failed to upload image");
+            //     fileOk = false;
+            // }
+
+            if (fileOk)
+            {
+                // Serve up HTML to browser
+                Console.WriteLine("File uploaded, refreshing page");
+                response.renderHTML();
+            }
+
         }
     }
 }

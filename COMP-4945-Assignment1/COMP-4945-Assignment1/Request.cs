@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Net.Sockets;
@@ -12,138 +13,104 @@ namespace Server
     {
         Socket socket = null;
         string requestType = null;
+        string url = null;
+        string version = null;
+        string filename = null;
+        string caption = null;
+        string date = null;
         string userAgent = null;
         string boundary = null;
         byte[] imageByteData = null;
         public Request(Socket socket) { this.socket = socket; }
         public void parsePayload()
         {
-            // Build Recieved Message
-            /*
-            Byte[] bytesReceived = new Byte[1];
-            string a = "";
-            while (true)
-            {
-                if ((socket.Receive(bytesReceived, bytesReceived.Length, 0) == 0) ||
-                 (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\r'))
-                {
-                    break;
-                }
-                a += Encoding.ASCII.GetString(bytesReceived, 0, 1);
-            }
-            */
-
             // Recieved Payload
             string receivedMessage = buildRequestMessage();
             Console.WriteLine(receivedMessage);
 
 
-            string[] req = receivedMessage.Split('\n');
+            string[] req = receivedMessage.Split("\r\n");
+            
 
-            foreach(string substring in req)
+            for (int i = 0; i < req.Length; i++)
             {
-                Console.WriteLine("STRING: " + substring);   
-
-                if (substring.Contains("GET"))
+                Console.WriteLine("STRING: " + req[i]);   
+                if (i == 0)
                 {
-                    requestType = "GET";
-                    Console.WriteLine("THIS REQUEST IS: " + requestType);
-                } else if (substring.Contains("POST")) {
-                    requestType = "POST";
-                    Console.WriteLine("THIS REQUEST IS: " + requestType);
+                    string[] headerInfo = req[i].Split(' ');
+                    requestType = headerInfo[0];
+                    url = headerInfo[1];
+                    version = headerInfo[2];
+                    Console.WriteLine("THIS REQUEST TYPE IS: " + requestType);
+                    Console.WriteLine("THIS REQUEST URL IS: " + url);
+                    Console.WriteLine("THIS REQUEST VERSION IS: " + version);
                 }
 
-                if (substring.Contains("User-Agent:")) 
+               
+                if (req[i].Contains("User-Agent:")) 
                 {
-                    Console.WriteLine(substring);
-                    string[] sub = substring.Split(": ");
+                    Console.WriteLine(req[i]);
+                    string[] sub = req[i].Split(": ");
                     Console.WriteLine("USERAGENT: " + sub[1]);
                     userAgent = sub[1];
                 }
-                if (substring.Contains("Content-Type: multipart/form-data"))
+                if (req[i].Contains("Content-Type: multipart/form-data"))
                 {
-                    Console.WriteLine("BOUNDARY: " + substring);
-                    string[] sub = substring.Split("; boundary=");
+                    Console.WriteLine("BOUNDARY: " + req[i]);
+                    string[] sub = req[i].Split("; boundary=");
                     boundary = sub[1];
                     Console.WriteLine("BOUNDARY: " + boundary);
                 }
 
-
-
-            }
-            
-            //string[] header = req[0].Split(' ');
-            //req = req.Skip(1).ToArray();
-            //string reqType = header[0];
-            //string URL = header[1];
-            //string version = header[2];
-
-            //Console.WriteLine(req[0]);
-            //Console.WriteLine(URL);
-            //Console.WriteLine(version);
-
-            //Console.WriteLine(lines[0]);
-
-            Dictionary<string, string> map = new Dictionary<string, string>();
-
-            /*  for(int i = 0; i < lines.Length-2 ; i++)
-              {
-                  string key = lines[i].Split(':')[0].Trim();
-                  string val = lines[i].Split(':')[1].Trim();
-                  Console.WriteLine("Key = " + key);
-                  Console.WriteLine("Val = " + val);
-                  map.Add(key, val);
-              }*/
-            foreach (string line in req)
-            {
-                if (line != null)
+                if (req[i].Contains("Content-Type: image/jpeg"))
                 {
-                    // Console.WriteLine(line + "a");
-                    /*      string key = line.Split(':')[0].Trim();
-                          string val = line.Split(':')[1].Trim();
-                          Console.WriteLine(key);
-                          Console.WriteLine(val);
-                          map.Add(key, val);*/
+                    string imgBytes = req[i + 1] + req[i + 2];
+                    imageByteData = Encoding.ASCII.GetBytes(imgBytes + '\0');
+                    Console.WriteLine("JPEG IMG == "  + imgBytes);
+
                 }
+
+                if (req[i].Contains("Content-Type: image/png"))
+                {
+                    string imgBytes = req[i + 2] + "\r\n" + req[i + 3] + "\0";
+
+                   
+                    imageByteData = Encoding.Default.GetBytes(imgBytes);
+                    byte[] imageByteDataReverse = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAB8AAAARCAYAAAAlpHdJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC2SURBVEhL7ZXdDYMwDIS9YCTmQdnETBLm4CFTeIRrapLGRakQLTQP7cNJsXz4u/xIkIigl34YzgPBTbHZPKTZg8gjtHovdA18YThy4GXj2eg8uNUxOMMTpeRJAyMWQ94NT27tJflZEMbszbX1Bgl11k4AhVdThNZjWA06sJ5MzCEKUEOUsO8e+wN2lx1i141aw3wKf7pz/bAX3A75BrwObN35xfC9134YXjZhHmdL/x9LF3WEC25pAgP+h75e8AAAAABJRU5ErkJggg==");
+                
+                    
+                    Console.WriteLine("PNG IMAGE === \n " + imgBytes);
+                    Console.WriteLine("BASE 64 IMG CORRECT \n" + Convert.ToBase64String(imageByteDataReverse));
+                    Console.WriteLine("BASE 64 IMG \n" + Convert.ToBase64String(imageByteData));
+
+                }
+
+                if (req[i].Contains("filename="))
+                {
+                    filename = req[i].Split("filename=")[1];
+                    filename = filename.Substring(1, filename.Length - 2);
+
+
+                }
+
+                if (req[i].Contains("caption"))
+                {
+                    caption = req[i + 2];
+                    
+                }
+                if (req[i].Contains("date"))
+                {
+                    date = req[i + 2];
+                    
+                }
+
             }
-            //Console.WriteLine("user agent = " +  map["User-Agent"]);
-
-            /*      DirectoryInfo di = new DirectoryInfo(a);
-                  FileInfo[] fiArr = di.GetFiles();
-                  string files = "";
-                  foreach (FileInfo fri in fiArr) { files = files + fri.Name; }*/
-
-
-            //string files = """
-            //HTTP/1.1 200 ok
-            //Content-Type: text/html
+            Console.WriteLine("DATE ====" + date);
+            Console.WriteLine("CAPTION ===" + caption);
+            Console.WriteLine("FILE NAME ===" + filename);
+            Console.WriteLine("IMG BYTE ====");
             
-            //<!DOCTYPE html>
-            //<html>
-            //    <head>
-            //        <title>File Upload Form</title>
-            //    </head>
-            //    <body>
-            //<h1>Upload file</h1>
-            //<form method="POST" action="/" enctype="multipart/form-data">
-            //<input type="file" name="fileName"/><br/><br/>
-            //Caption: <input type="text" name="caption"<br/><br/>
-            //<br />
-            //Date: <input type="date" name="date"<br/><br/>
-            //<br />
-            //<input type="submit" value="Submit"/>
-            //</form>
-            //</body>
-            //</html>
-            //""";
-
-            //string files = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 600\n\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<title> File Upload Form</title>\r\n</head>\r\n<body>\r\n<h1>Upload file</h1>\r\n<form id =\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n<input type=\"file\" name=\"fileName\"/><br/><br/>\r\nCaption: <input type =\"text\" name=\"caption\"<br/><br/>\r\n <br/>\nDate : <input type=\"date\" name=\"date\"<br/><br/>\r\n <br/>\n <input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n </form>\r\n</body>\r\n</html>\r\n";
-
-            //foreach (FileInfo fri in fiArr) { files = files + fri.Name; }
-            //byte[] msg = Encoding.ASCII.GetBytes(files);
-
-            //socket.Send(msg, msg.Length, 0);
-            //socket.Close();
+            
         }
 
         // TODO: Implement getters
@@ -158,11 +125,15 @@ namespace Server
             return userAgent;
         }
 
+        public string getFileName()
+        {
+            return filename;
+        }
+
         public byte[] getImageByteCode()
         {
             // Preliminary Test
-            byte[] ar = new byte[2];
-            return ar;
+            return imageByteData;
         }
 
         public string buildRequestMessage()
