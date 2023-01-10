@@ -69,10 +69,12 @@ namespace Server {
 					string checkMsg = null;
 					int k = 0;
 					while (true) {
-
+						if(k >= imgBytes.Length) {
+							break;
+						}
 						checkMsg += (char)(imgBytes[k]);
 
-						if (checkMsg.Contains("--" + boundary)) {
+						if (checkMsg.Contains("--")) {
 							break;
 						}
 						else {
