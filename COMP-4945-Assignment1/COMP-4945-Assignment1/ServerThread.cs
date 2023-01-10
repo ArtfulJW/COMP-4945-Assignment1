@@ -1,10 +1,22 @@
-﻿using System;
+﻿/*
+ * Settings for Reflection:
+ * Go to Project -> Add Reference.. -> Projects -> Select DataStorageAPI
+ * Notice that the project compiles even when no implementation of UploadServlet exists
+ * Copy the UploadServlet.dll to the bin/debug directory of Server project
+ */
+
+using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.CompilerServices;
+using System.Net.NetworkInformation;
 
 namespace Server
 {
@@ -17,6 +29,38 @@ namespace Server
         public ServerThread(Socket socket)
         {
             this.socket = socket;
+        }
+
+        public UploadServlet createServlet()
+        {
+
+            // Get curret Directory
+            string currentDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location.Split("Server.exe")[0]);
+            string servletdllPath = Path.Combine(currentDirectory, "UploadServlet.dll");
+            string className = "Server.UploadServlet";
+
+            Assembly assembly = AppDomain.CurrentDomain.Load(Assembly.LoadFrom(servletdllPath).GetName());
+
+            // Output: UploadServlet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+            // So we know for sure Reflection is working
+            // Console.WriteLine(assembly);
+
+            Type servletType = assembly.GetType(className);
+
+            /*
+             * Solution:
+             * https://stackoverflow.com/questions/29978888/type-a-dll-cannot-be-cast-to-type-b-dll-type-a-originates-from-in-the-context
+             * 
+             * '[A]Server.UploadServlet cannot be cast to [B]Server.UploadServlet. 
+             * 
+             * Type A originates from 'UploadServlet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' in the context 'Default' at location: 
+             * 'D:\BCIT\BCIT-Level-4\COMP-4549\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\UploadServlet.dll'.
+             * 
+             * Type B originates from 'UploadServlet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' in the context 'Default' at location: 
+             * 'D:\BCIT\BCIT-Level-4\COMP-4549\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\UploadServlet.dll'.'
+             */
+            return (UploadServlet)Activator.CreateInstance(servletType) ;
+
         }
 
         // Delegate Method
@@ -62,10 +106,12 @@ namespace Server
             // Console.WriteLine("RECIEVED MESSAGE\n" + buildRequestMessage());
             
             Response response = new Response(socket);
-            UploadServlet uploadServlet = new UploadServlet();
+
+            // Use Reflection to serve up UploadServlet
+            UploadServlet reflectedServlet = createServlet();
 
             // Execute
-            uploadServlet.execute(request, response);
+            reflectedServlet.execute(request, response);
 
         }
 

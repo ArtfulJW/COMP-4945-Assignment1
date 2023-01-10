@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "COMP-4945-Assignm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{B962C56E-85F4-4F48-932A-10A43E3D6693}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UploadServlet", "UploadServlet\UploadServlet.csproj", "{524C4C4A-E6EA-47A6-B690-2FDB55AC77A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B962C56E-85F4-4F48-932A-10A43E3D6693}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B962C56E-85F4-4F48-932A-10A43E3D6693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B962C56E-85F4-4F48-932A-10A43E3D6693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{524C4C4A-E6EA-47A6-B690-2FDB55AC77A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{524C4C4A-E6EA-47A6-B690-2FDB55AC77A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{524C4C4A-E6EA-47A6-B690-2FDB55AC77A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{524C4C4A-E6EA-47A6-B690-2FDB55AC77A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
