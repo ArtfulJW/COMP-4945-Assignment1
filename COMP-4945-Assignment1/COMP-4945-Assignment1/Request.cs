@@ -9,239 +9,238 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-	public class Request
-	{
-		List<byte> b1 = new List<byte>();
+    public class Request
+    {
+        List<byte> b1 = new List<byte>();
 
-		Socket socket = null;
-		string requestType = null;
-		string url = null;
-		string version = null;
-		string filename = null;
-		string caption = null;
-		string date = null;
-		string userAgent = null;
-		string boundary = null;
-		byte[] imageByteData = null;
-		public Request(Socket socket) { this.socket = socket; }
-		public void parsePayload()
-		{
-			// Recieved Payload
-			string receivedMessage = buildRequestMessage();
-			Console.WriteLine(receivedMessage);
-
-
-			string[] req = receivedMessage.Split("\r\n\r\n");
-			
-
-			for (int i = 0; i < req.Length; i++)
-			{
-				Console.WriteLine("STRING: " + req[i]);   
-				if (i == 0)
-				{
-					string[] headerInfo = req[i].Split(' ');
-					requestType = headerInfo[0];
-					url = headerInfo[1];
-					version = headerInfo[2];
-					Console.WriteLine("THIS REQUEST TYPE IS: " + requestType);
-					Console.WriteLine("THIS REQUEST URL IS: " + url);
-					Console.WriteLine("THIS REQUEST VERSION IS: " + version);
-				}
-
-			   
-				if (req[i].Contains("User-Agent:")) 
-				{
-					Console.WriteLine(req[i]);
-					string[] sub = req[i].Split(": ");
-					Console.WriteLine("USERAGENT: " + sub[1]);
-					userAgent = sub[1];
-				}
-				if (req[i].Contains("Content-Type: multipart/form-data")) {
-					string sub = req[i].Split("; boundary=")[1];
-					boundary = sub.Split("\r\n")[0];
-					Console.WriteLine("BOUNDARY: " + boundary + " END ");
-				}
-
-				if (req[i].Contains("Content-Type: image/jpeg"))
-				{
-					string imgBytes = req[i + 1].Trim() + req[i + 2].Trim();
-					imageByteData = Encoding.ASCII.GetBytes(imgBytes);
-					Console.WriteLine("JPEG IMG == "  + imgBytes);
-
-				}
+        Socket socket = null;
+        string requestType = null;
+        string url = null;
+        string version = null;
+        string filename = null;
+        string caption = null;
+        string date = null;
+        string userAgent = null;
+        string boundary = null;
+        byte[] imageByteData = null;
+        public Request(Socket socket) { this.socket = socket; }
+        public void parsePayload()
+        {
+            // Recieved Payload
+            string receivedMessage = buildRequestMessage();
+            Console.WriteLine(receivedMessage);
 
 
-				if (req[i].Contains("Content-Type: image/png"))
-				{
-					int k = 0;
-					while (true)
-					{
-						if(b1[k] == '-' && b1[k + 1] == '-')
-						{
-							break;
-						} else
-						{
-							k++;
-						}
+            string[] req = receivedMessage.Split(boundary);
+            
 
-					}
-					b1.RemoveAt(0);
-					b1.RemoveRange(k-3, b1.Count-k+3);
-					imageByteData = b1.ToArray();                    
-				}
+            for (int i = 0; i < req.Length; i++)
+            {
+                Console.WriteLine("STRING: " + req[i]);   
+                if (i == 0)
+                {
+                    string[] headerInfo = req[i].Split(' ');
+                    requestType = headerInfo[0];
+                    url = headerInfo[1];
+                    version = headerInfo[2];
+                    Console.WriteLine("THIS REQUEST TYPE IS: " + requestType);
+                    Console.WriteLine("THIS REQUEST URL IS: " + url);
+                    Console.WriteLine("THIS REQUEST VERSION IS: " + version);
+                }
+               
+                if (req[i].Contains("User-Agent:")) 
+                {
+                    Console.WriteLine(req[i]);
+                    string[] sub = req[i].Split(": ");
+                    Console.WriteLine("USERAGENT: " + sub[1]);
+                    userAgent = sub[1].Split("\r\n")[0];
+                }
 
-				if (req[i].Contains("filename="))
-				{
-					filename = req[i].Split("filename=\"")[1];
-					filename = filename.Split('.')[0];
+                if (req[i].Contains("Content-Type: image/png") || req[i].Contains("Content-Type: image/jpeg"))
+                {
+                    /*  string imgString = req[i].Split("--")[0];
+                      imgString = imgString.Split("\r\n\r\n")[1];
+                      imgString.Trim();
+                      Console.WriteLine("HEREERERE  \n" + imgString +"ENDDDD");
 
+                      imageByteData = Encoding.ASCII.GetBytes(imgString);
+                      foreach(byte data in imageByteData)
+                      {
+                          Console.WriteLine(data);
+                      }*/
 
-				}
+                    byte[] imgBytes = b1.ToArray();
+                    
+                    
 
-				if (req[i].Contains("caption"))
-				{
-					caption = req[i + 2];
-					
-				}
-				if (req[i].Contains("date"))
-				{
-					date = req[i + 2];
-					
-				}
+                    string checkMsg = null;
+                    int k = 0;
+                    while (true)
+                    {
 
-			}   
-			
-		}
+                        checkMsg += (char)(imgBytes[k]);
+                
+                        if (checkMsg.Contains("--" + boundary))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            k++;
+                        }
 
-		// TODO: Implement getters
-		// Getters
-		public string getRequestType()
-		{
-			return requestType;
-		}
+                    }
+                    b1.RemoveAt(0);
+                    b1.RemoveRange(k - 3, b1.Count - k + 3);
+                    imageByteData = b1.ToArray();
+                }
 
-		public string getUserAgent()
-		{
-			return userAgent;
-		}
+                if (req[i].Contains("filename="))
+                {
+                    filename = req[i].Split("filename=\"")[1];
+                    filename = filename.Split('.')[0];
+                }
 
-		public string getFileName()
-		{
-			return filename;
-		}
+                if (req[i].Contains("caption"))
+                {
+                    caption = req[i + 2];
+                    
+                    
+                }
+                if (req[i].Contains("date"))
+                {
+                //    date = req[i + 2];
+                    
+                }
 
-		public byte[] getImageByteCode()
-		{
-			// Preliminary Test
-			return imageByteData;
-		}
+            }   
+            
+        }
 
-		public string buildRequestMessage()
-		{
-			//Set character buffer of one byte
-			byte[] bytesReceived = new byte[1];
-			
-			string recievedMessage = "";
-			string multipart = "";
-			bool gotBoundary = false;
+        // TODO: Implement getters
+        // Getters
+        public string getRequestType()
+        {
+            return requestType;
+        }
 
-			// Infinitely Recurse - build message
-			while (true)
-			{
-				int recv;
-				//If recv is 0 the connection is closed
-				bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
-				
-				//Check if client connection closed or end line received
-				if (isClosed && (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\n'))
-				{
-					Console.WriteLine("Connection Closed");
-					// Exit while loop
-					break;
-				}
-				// string a should now have the whole http request saved.s
-				recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
-				if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n"))
-				{
-					try
-					{
-						b1.Add(bytesReceived[0]);             
-					} catch
-					{
-						Console.WriteLine("FAIL ADD");
-					}
-				}
+        public string getUserAgent()
+        {
+            return userAgent;
+        }
 
-				int x = 0;
+        public string getFileName()
+        {
+            return filename;
+        }
 
-				// Check for end of transmission
-				//if (recievedMessage.Length >= 4)
-				//{
-				//    for (int i = 1; i < 5; i++)
-				//    {
-				//        if (i % 2 == 0)
-				//        {
-				//            if (recievedMessage[recievedMessage.Length - i] == '\r')
-				//            {
-				//                x++;
-				//            }
-				//        }
-				//        else
-				//        {
-				//            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
-				//            x++;
-				//        }
-				//    }
-				//    if (x == 4 && requestType == "GET")
-				//    {
-				//        Console.WriteLine("EOF");
-				//        break;
-				//    } else
-				//    {
+        public byte[] getImageByteCode()
+        {
+            // Preliminary Test
+            return imageByteData;
+        }
 
-				//        // keep going until content length
-				//    }
-				//}
+        public string buildRequestMessage()
+        {
+            //Set character buffer of one byte
+            byte[] bytesReceived = new byte[1];
+            
+            string recievedMessage = "";
+            string multipart = "";
+            bool gotBoundary = false;
 
-				// End of GET Request
-				if (recievedMessage.Contains("\r\n\r\n") && recievedMessage.Contains("GET"))
-				{
-					break;
-				}
+            // Infinitely Recurse - build message
+            while (true)
+            {
+                int recv;
+                //If recv is 0 the connection is closed
+                bool isClosed = ((recv = socket.Receive(bytesReceived, bytesReceived.Length, 0)) == 0);
+                
+                //Check if client connection closed or end line received
+                if (isClosed && (Encoding.ASCII.GetString(bytesReceived, 0, 1)[0] == '\n'))
+                {
+                    Console.WriteLine("Connection Closed");
+                    // Exit while loop
+                    break;
+                }
+                // string a should now have the whole http request saved.s
+                recievedMessage += Encoding.ASCII.GetString(bytesReceived, 0, 1);
+                if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n") || recievedMessage.Contains("Content-Type: image/jpeg\r\n\r\n"))
+                {
+                    try
+                    {                        
+                        b1.Add(bytesReceived[0]);                  
+                    } catch
+                    {
+                        Console.WriteLine("FAIL ADD");
+                    }
+                }              
 
-				if (recievedMessage.Contains("Content-Type: multipart/form-data") && gotBoundary == false) {
-					try {
-						string sub = recievedMessage.Split("; boundary=")[1];
-						if (sub.Contains("\r\n")) {
-							boundary = sub.Split("\r\n")[0];
-							Console.WriteLine("BOUNDARY: " + boundary + " END ");
-							gotBoundary = true;
-						}
-					}
-					catch {
-					}
-				}
-				//if (recievedMessage.Contains("Content-Type: multipart/form-data; boundary=") && recievedMessage.Length >= recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=") + 44 + 38 && gotBoundary == false) {
-				//    Console.WriteLine("HELL");
-				//    string intermediate = recievedMessage.Substring(0, recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=") + 44 + 38);
-				//    string[] arr = intermediate.Split("Content-Type: multipart/form-data; boundary=");
-				//    boundary = arr[1].Trim();
-				//    gotBoundary = true;
-				//    Console.WriteLine("BOUNDARY: " + boundary);
+                int x = 0;
 
-				//}
+                // Check for end of transmission
+                //if (recievedMessage.Length >= 4)
+                //{
+                //    for (int i = 1; i < 5; i++)
+                //    {
+                //        if (i % 2 == 0)
+                //        {
+                //            if (recievedMessage[recievedMessage.Length - i] == '\r')
+                //            {
+                //                x++;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            if (recievedMessage[recievedMessage.Length - i] == '\n') { }
+                //            x++;
+                //        }
+                //    }
+                //    if (x == 4 && requestType == "GET")
+                //    {
+                //        Console.WriteLine("EOF");
+                //        break;
+                //    } else
+                //    {
 
-				if (gotBoundary == true) {
-					if (recievedMessage.Contains(boundary + "--\r\n")) {
-						if (recievedMessage.Contains("POST")) {
-							Console.WriteLine("Exit POST Request LOOP");
-							break;
-						}
-					}
-				}
-			}
-			return recievedMessage;
-		}
+                //        // keep going until content length
+                //    }
+                //}
 
-	}
+                // End of GET Request
+                if (recievedMessage.Contains("\r\n\r\n") && recievedMessage.Contains("GET"))
+                {
+                    break;
+                }
+
+                if (recievedMessage.Contains("Content-Type: multipart/form-data; boundary=") && recievedMessage.Length >= recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=") + 44 + 38 && gotBoundary == false)
+                {
+                    try
+                    {
+                        string sub = recievedMessage.Split("; boundary=")[1];
+                        if (sub.Contains("\r\n"))
+                        {
+                            boundary = sub.Split("\r\n")[0];
+                            Console.WriteLine("BOUNDARY: FIRST :  " + boundary + " END ");
+                            gotBoundary = true;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Boundary not caught");
+                    }
+
+                }
+
+                if (recievedMessage.Contains("--" + boundary + "--") && recievedMessage.Contains("POST") && gotBoundary == true)
+                {
+                    Console.WriteLine("Exit POST Request LOOP");
+                    break;
+                }
+            }
+            return recievedMessage;
+        }
+
+    }
+
 }

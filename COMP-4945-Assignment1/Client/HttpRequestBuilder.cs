@@ -150,8 +150,7 @@ namespace Client {
                     break;
             }
             bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Type: "));
-            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(contentType));
-            //bodyBuilder.AddRange(Encoding.ASCII.GetBytes(fileType));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(contentType));            
             bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n\r\n"));
         }
 
