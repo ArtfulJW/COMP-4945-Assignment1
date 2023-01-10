@@ -96,10 +96,12 @@ namespace Server
             Response response = new Response(socket);
 
             // Use Reflection to serve up UploadServlet
-            UploadServlet reflectedServlet = createServlet();
+            //UploadServlet reflectedServlet = createServlet();
 
-            // Execute
-            reflectedServlet.execute(request, response);
+            //// Execute
+            //reflectedServlet.execute(request, response);
+            UploadServlet upload = new UploadServlet();
+            upload.execute(request, response);
             socket.Close();
 
         }
