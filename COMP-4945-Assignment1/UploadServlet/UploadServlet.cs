@@ -12,21 +12,15 @@ namespace Server
 
         public void execute(Request request, Response response)
         {
-            if (request.getUserAgent() != "CLI")
+            
+            switch (request.getRequestType())
             {
-                switch (request.getRequestType())
-                {
-                    case "GET":
-                        get(request, response);
-                        break;
-                    case "POST":
-                        post(request, response);
-                        break;
-                }
-            }
-            else if (request.getUserAgent() == "CLI" && request.getRequestType() == "POST")
-            {
-                post(request, response);
+                case "GET":
+                    get(request, response);
+                    break;
+                case "POST":
+                    post(request, response);
+                    break;
             }
         }
 
@@ -78,11 +72,16 @@ namespace Server
 
             if (fileOk)
             {
-                // Serve up HTML to browser
-                Console.WriteLine("File uploaded, refreshing page");
-                response.renderHTML();
-            }
+                if(request.getUserAgent() == "CLI") {
+                
 
+                } else
+                {
+                    // Serve up HTML to browser
+                    Console.WriteLine("File uploaded, refreshing page");
+                    response.renderOkResponsePage();
+                }                
+            }
         }
 
         static void Main(string[] args)

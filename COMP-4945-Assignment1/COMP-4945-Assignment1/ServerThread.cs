@@ -100,6 +100,7 @@ namespace Server
 
             // Execute
             reflectedServlet.execute(request, response);
+            socket.Close();
 
         }
 

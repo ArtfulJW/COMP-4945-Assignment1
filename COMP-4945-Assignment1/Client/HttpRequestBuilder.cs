@@ -11,7 +11,6 @@ namespace Client {
     internal class HttpRequestBuilder {
 
         public const string VERSION = "HTTP/1.1";
-        public const string HOST = "HTTP/1.1";
         public const string BOUNDARY = "12345abcde";
         private IPEndPoint ipe;
 
@@ -39,9 +38,6 @@ namespace Client {
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("Accept: "));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("*/*"));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
-            reqBuilder.AddRange(Encoding.ASCII.GetBytes("Host: "));
-            reqBuilder.AddRange(Encoding.ASCII.GetBytes(HOST));
-            reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("Accept-Encoding: gzip, deflate, br"));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("Connection: "));
@@ -53,7 +49,7 @@ namespace Client {
             reqBuilder.AddRange(Encoding.ASCII.GetBytes(BOUNDARY));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Length: "));
-            reqBuilder.AddRange(bodyBuilder);
+            reqBuilder.AddRange(Encoding.ASCII.GetBytes(bodyBuilder.Count.ToString()));
             reqBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
             // split body from head
@@ -122,7 +118,7 @@ namespace Client {
                 buildContentType(bodyBuilder, filePath);
 
                 // add the file string as the body
-                bodyBuilder.AddRange(fileArray);
+				bodyBuilder.AddRange(Encoding.ASCII.GetBytes(Convert.ToBase64String(fileArray)));
                 bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n"));
 
                 bodyBuilder.AddRange(Encoding.ASCII.GetBytes("--"));
@@ -154,8 +150,7 @@ namespace Client {
                     break;
             }
             bodyBuilder.AddRange(Encoding.ASCII.GetBytes("Content-Type: "));
-            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(contentType));
-            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(fileType));
+            bodyBuilder.AddRange(Encoding.ASCII.GetBytes(contentType));            
             bodyBuilder.AddRange(Encoding.ASCII.GetBytes("\r\n\r\n"));
         }
 
