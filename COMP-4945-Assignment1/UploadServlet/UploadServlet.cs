@@ -40,7 +40,7 @@ namespace Server
             // String fileName = request.getFileName();
 
             // images FolderPath relative to this file.
-            string imageFolderPath = ".\\.\\images\\" + request.getFileName()+".png";
+            string imageFolderPath = ".\\.\\images\\" + request.getFileName() + ".png";
 
             // Convert ImageByteCode (byte[]) into string
             // string imageString = Encoding.UTF8.GetString(request.getImageByteCode());
@@ -83,5 +83,11 @@ namespace Server
                 }                
             }
         }
+
+        static void Main(string[] args)
+        {
+
+        }
+
     }
 }
