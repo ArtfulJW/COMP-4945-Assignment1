@@ -47,18 +47,6 @@ namespace Server
 
             Type servletType = assembly.GetType(className);
 
-            /*
-             * Solution:
-             * https://stackoverflow.com/questions/29978888/type-a-dll-cannot-be-cast-to-type-b-dll-type-a-originates-from-in-the-context
-             * 
-             * '[A]Server.UploadServlet cannot be cast to [B]Server.UploadServlet. 
-             * 
-             * Type A originates from 'UploadServlet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' in the context 'Default' at location: 
-             * 'D:\BCIT\BCIT-Level-4\COMP-4549\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\UploadServlet.dll'.
-             * 
-             * Type B originates from 'UploadServlet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' in the context 'Default' at location: 
-             * 'D:\BCIT\BCIT-Level-4\COMP-4549\Assignment-1\COMP-4945-Assignment1\COMP-4945-Assignment1\COMP-4945-Assignment1\bin\Debug\net6.0\UploadServlet.dll'.'
-             */
             return (UploadServlet)Activator.CreateInstance(servletType) ;
 
         }
