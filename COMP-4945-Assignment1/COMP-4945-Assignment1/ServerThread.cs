@@ -102,7 +102,8 @@ namespace Server
             //reflectedServlet.execute(request, response);
             UploadServlet upload = new UploadServlet();
             upload.execute(request, response);
-            socket.Close();
+            socket.Close(10);
+            Console.WriteLine("Closed");
 
         }
 
