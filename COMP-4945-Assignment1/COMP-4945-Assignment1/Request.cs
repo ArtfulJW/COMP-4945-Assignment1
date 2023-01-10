@@ -28,15 +28,15 @@ namespace Server
         {
             // Recieved Payload
             string receivedMessage = buildRequestMessage();
-            //Console.WriteLine(receivedMessage);
+            Console.WriteLine(receivedMessage);
 
 
-            string[] req = receivedMessage.Split("\r\n\r\n");
+            string[] req = receivedMessage.Split(boundary);
             
 
             for (int i = 0; i < req.Length; i++)
             {
-                //Console.WriteLine("STRING: " + req[i]);   
+                Console.WriteLine("STRING: " + req[i]);   
                 if (i == 0)
                 {
                     string[] headerInfo = req[i].Split(' ');
@@ -53,33 +53,46 @@ namespace Server
                     Console.WriteLine(req[i]);
                     string[] sub = req[i].Split(": ");
                     Console.WriteLine("USERAGENT: " + sub[1]);
-                    userAgent = sub[1];
+                    userAgent = sub[1].Split("\r\n")[0];
                 }
 
-                if (req[i].Contains("Content-Type: multipart/form-data"))
-                {                   
-                    string sub = req[i].Split("; boundary=")[1];
-                    boundary = sub.Split("\r\n")[0];
-                    Console.WriteLine("BOUNDARY: " + boundary + " END ");
-                }
-                          
                 if (req[i].Contains("Content-Type: image/png") || req[i].Contains("Content-Type: image/jpeg"))
                 {
+                    /*  string imgString = req[i].Split("--")[0];
+                      imgString = imgString.Split("\r\n\r\n")[1];
+                      imgString.Trim();
+                      Console.WriteLine("HEREERERE  \n" + imgString +"ENDDDD");
+
+                      imageByteData = Encoding.ASCII.GetBytes(imgString);
+                      foreach(byte data in imageByteData)
+                      {
+                          Console.WriteLine(data);
+                      }*/
+
+                    byte[] imgBytes = b1.ToArray();
+                    
+                    
+
+                    string checkMsg = null;
                     int k = 0;
                     while (true)
                     {
-                        if(b1[k] == '-' && b1[k + 1] == '-' && b1[k + 2] == '-')
+
+                        checkMsg += (char)(imgBytes[k]);
+                
+                        if (checkMsg.Contains("--" + boundary))
                         {
                             break;
-                        } else
+                        }
+                        else
                         {
                             k++;
                         }
 
                     }
                     b1.RemoveAt(0);
-                    b1.RemoveRange(k-3, b1.Count-k+3);
-                    imageByteData = b1.ToArray();                    
+                    b1.RemoveRange(k - 3, b1.Count - k + 3);
+                    imageByteData = b1.ToArray();
                 }
 
                 if (req[i].Contains("filename="))
@@ -92,10 +105,11 @@ namespace Server
                 {
                     caption = req[i + 2];
                     
+                    
                 }
                 if (req[i].Contains("date"))
                 {
-                    date = req[i + 2];
+                //    date = req[i + 2];
                     
                 }
 
@@ -154,13 +168,13 @@ namespace Server
                 if ( recievedMessage.Contains("Content-Type: image/png\r\n\r\n") || recievedMessage.Contains("Content-Type: image/jpeg\r\n\r\n"))
                 {
                     try
-                    {
-                        b1.Add(bytesReceived[0]);             
+                    {                        
+                        b1.Add(bytesReceived[0]);                  
                     } catch
                     {
                         Console.WriteLine("FAIL ADD");
                     }
-                }
+                }              
 
                 int x = 0;
 
@@ -201,12 +215,20 @@ namespace Server
 
                 if (recievedMessage.Contains("Content-Type: multipart/form-data; boundary=") && recievedMessage.Length >= recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=") + 44 + 38 && gotBoundary == false)
                 {
-                    Console.WriteLine("HELL");
-                    string intermediate = recievedMessage.Substring(0, recievedMessage.IndexOf("Content-Type: multipart/form-data; boundary=")+44+38);
-                    string[] arr = intermediate.Split("Content-Type: multipart/form-data; boundary=");
-                    boundary = arr[1].Trim();
-                    gotBoundary = true;
-                    Console.WriteLine("BOUNDARY: " + boundary);
+                    try
+                    {
+                        string sub = recievedMessage.Split("; boundary=")[1];
+                        if (sub.Contains("\r\n"))
+                        {
+                            boundary = sub.Split("\r\n")[0];
+                            Console.WriteLine("BOUNDARY: FIRST :  " + boundary + " END ");
+                            gotBoundary = true;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Boundary not caught");
+                    }
 
                 }
 
