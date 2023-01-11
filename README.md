@@ -1,4 +1,9 @@
 # COMP-4945-Assignment1
+Open Visual Studio solution file
+Build project
+Run server
+browser URL is localhost:8000
+CLI in Client\bin\Debug
 
 ## Proposed User-Flow
 https://drive.google.com/file/d/13XUdjnfI1FiNC6mfpIDk1PUEhc1vqKmO/view?usp=sharing
