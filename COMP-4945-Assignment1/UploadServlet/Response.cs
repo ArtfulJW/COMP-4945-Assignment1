@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Server
 {
@@ -49,6 +50,25 @@ namespace Server
             socket.Send(message, message.Length, 0);
         }
 
+        public void renderOkCLI()
+        {
+            string path = ".\\.\\images\\";
+            DirectoryInfo d = new DirectoryInfo(path);
+            FileInfo[] filePaths = d.GetFiles();
+            string files = null;
+            List<string> result = new List<string>();
+            Array.Sort(filePaths, StringComparer.CurrentCultureIgnoreCase);
+            foreach (FileInfo filePath in filePaths)
+            {
+                //Console.WriteLine(filePath.Name);
+                result.Add(filePath.Name);
+            }
+
+            var json = JsonSerializer.Serialize(result);
+
+            byte[] message = System.Text.Encoding.ASCII.GetBytes(json + '\0');
+            socket.Send(message, message.Length, 0);
+        }
 
     }
 }

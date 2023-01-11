@@ -75,7 +75,7 @@ namespace Server
                 if(request.getUserAgent() == "CLI") {
                     //TODO Replace with JSON message
                     Console.WriteLine("File uploaded, sending response");
-                    response.renderOkResponsePage();
+                    response.renderOkCLI();
                 } else
                 {
                     // Serve up HTML to browser
