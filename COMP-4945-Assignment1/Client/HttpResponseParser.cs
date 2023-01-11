@@ -24,7 +24,7 @@ namespace Client {
         public void parse() {
             string[] splitRes = response.Split(new string[] { SECTION_BOUNDARY }, StringSplitOptions.RemoveEmptyEntries);
             string body = splitRes[0];
-            string[] splitBody = body.Split(new char[] { ',', '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splitBody = body.Split(new char[] {'[', ']', ',', '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string entry in splitBody) {
                 Console.WriteLine(entry);
             }

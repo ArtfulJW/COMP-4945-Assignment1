@@ -35,17 +35,25 @@ namespace Server
             DirectoryInfo d = new DirectoryInfo(path);
             FileInfo[] filePaths = d.GetFiles();
             string files = null;
-            Array.Sort(filePaths, StringComparer.CurrentCultureIgnoreCase);
-            var charCount = 0;
+            string fileList = null;
+            List<string> fileArray = new List<string>();   
             foreach (FileInfo filePath in filePaths)
             {
                 //Console.WriteLine(filePath.Name);
-                htmlEnd += filePath.Name;
-                charCount += filePath.Name.Length;
+                fileArray.Add(filePath.Name);
             }
-            string size = charCount.ToString();
+            fileArray.Sort();
+            var charCount = 0;
+            foreach (string filePath in fileArray)
+            {
+                //Console.WriteLine(filePath.Name);
+                fileList += filePath + "\n";
+                charCount += filePath.Length;
+            }
+            string size = fileList.Length.ToString();
             uploadHTML += size;
             uploadHTML += htmlEnd;
+            uploadHTML += fileList;
             byte[] message = System.Text.Encoding.ASCII.GetBytes(uploadHTML + '\0');
             socket.Send(message, message.Length, 0);
         }
@@ -57,16 +65,15 @@ namespace Server
             FileInfo[] filePaths = d.GetFiles();
             string files = null;
             List<string> result = new List<string>();
-            Array.Sort(filePaths, StringComparer.CurrentCultureIgnoreCase);
             foreach (FileInfo filePath in filePaths)
             {
                 //Console.WriteLine(filePath.Name);
                 result.Add(filePath.Name);
             }
-
+            result.Sort();
             var json = JsonSerializer.Serialize(result);
 
-            byte[] message = System.Text.Encoding.ASCII.GetBytes(json + '\0');
+            byte[] message = System.Text.Encoding.ASCII.GetBytes(json.ToString() + '\0');
             socket.Send(message, message.Length, 0);
         }
 
