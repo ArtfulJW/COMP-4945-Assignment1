@@ -96,7 +96,7 @@ namespace Server
 
                     }
                     byteList.RemoveAt(0);
-                    byteList.RemoveRange(k - 3, byteList.Count - k + 3);
+                    byteList.RemoveRange(k - 4, byteList.Count - k + 4);
                     if (userAgent == "CLI")
                     {
                         // byteList List<bytes> currently storing Base64 String
