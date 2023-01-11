@@ -12,21 +12,15 @@ namespace Server
 
         public void execute(Request request, Response response)
         {
-            if (request.getUserAgent() != "CLI")
+            
+            switch (request.getRequestType())
             {
-                switch (request.getRequestType())
-                {
-                    case "GET":
-                        get(request, response);
-                        break;
-                    case "POST":
-                        post(request, response);
-                        break;
-                }
-            }
-            else if (request.getUserAgent() == "CLI" && request.getRequestType() == "POST")
-            {
-                post(request, response);
+                case "GET":
+                    get(request, response);
+                    break;
+                case "POST":
+                    post(request, response);
+                    break;
             }
         }
 
@@ -46,7 +40,8 @@ namespace Server
             // String fileName = request.getFileName();
 
             // images FolderPath relative to this file.
-            string imageFolderPath = ".\\.\\images\\" + request.getFileName()+".png";
+            string imageFolderPath = ".\\.\\images\\" + request.getFileName() + '.' + request.getImageType();
+            Console.WriteLine(imageFolderPath);
 
             // Convert ImageByteCode (byte[]) into string
             // string imageString = Encoding.UTF8.GetString(request.getImageByteCode());
@@ -78,11 +73,23 @@ namespace Server
 
             if (fileOk)
             {
-                // Serve up HTML to browser
-                Console.WriteLine("File uploaded, refreshing page");
-                response.renderHTML();
+                if(request.getUserAgent() == "CLI") {
+                    //TODO Replace with JSON message
+                    Console.WriteLine("File uploaded, sending response");
+                    response.renderOkCLI();
+                } else
+                {
+                    // Serve up HTML to browser
+                    Console.WriteLine("File uploaded, displaying all files in directory");
+                    response.renderOkResponsePage();
+                }                
             }
+        }
+
+        static void Main(string[] args)
+        {
 
         }
+
     }
 }

@@ -17,3 +17,4 @@ Able to recieve message from Browser until EOF without inf. looping
 buildrequestmessage()
 Worked on parsepayload()
 Fixed Infinite looping issue with POST request after detecting \r\n\r\n
+Implemented Reflection for External UploadServlet development
