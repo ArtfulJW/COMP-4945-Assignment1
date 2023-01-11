@@ -23,3 +23,9 @@ buildrequestmessage()
 Worked on parsepayload()
 Fixed Infinite looping issue with POST request after detecting \r\n\r\n
 Implemented Reflection for External UploadServlet development
+
+Jun mo An
+Parse request
+Bug Fix
+Demo Video/readme
+
