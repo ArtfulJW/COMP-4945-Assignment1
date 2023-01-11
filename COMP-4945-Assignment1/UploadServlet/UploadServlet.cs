@@ -79,7 +79,7 @@ namespace Server
                 } else
                 {
                     // Serve up HTML to browser
-                    Console.WriteLine("File uploaded, refreshing page");
+                    Console.WriteLine("File uploaded, displaying all files in directory");
                     response.renderOkResponsePage();
                 }                
             }
