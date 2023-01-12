@@ -29,3 +29,10 @@ Parse request
 Bug Fix
 Demo Video/readme
 
+Jason Oh
+Function to create alphabetically sorted listing of images folder as a html page
+Worked on response from server for browser
+Function to create alphabetically sorted listing of images folder as a json object
+Worked on response from server for CLI
+Assisted in parsing the request
+Worked on post function  
