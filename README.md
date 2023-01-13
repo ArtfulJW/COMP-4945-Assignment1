@@ -1,4 +1,9 @@
 # COMP-4945-Assignment1
+Open Visual Studio solution file
+Build project
+Run server
+browser URL is localhost:8000
+CLI in Client\bin\Debug
 
 ## Proposed User-Flow
 https://drive.google.com/file/d/13XUdjnfI1FiNC6mfpIDk1PUEhc1vqKmO/view?usp=sharing
@@ -18,3 +23,16 @@ buildrequestmessage()
 Worked on parsepayload()
 Fixed Infinite looping issue with POST request after detecting \r\n\r\n
 Implemented Reflection for External UploadServlet development
+
+Jun mo An
+Parse request
+Bug Fix
+Demo Video/readme
+
+Jason Oh
+Function to create alphabetically sorted listing of images folder as a html page
+Worked on response from server for browser
+Function to create alphabetically sorted listing of images folder as a json object
+Worked on response from server for CLI
+Assisted in parsing the request
+Worked on post function  
