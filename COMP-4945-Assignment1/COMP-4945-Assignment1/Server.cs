@@ -127,7 +127,6 @@ using System.Threading.Tasks;
 namespace Server {
     public class Program {
 
-
         static void Main(string[] args) {
             try
             {
@@ -150,7 +149,6 @@ namespace Server {
                 // Infinite Loop to deal with incoming Socket Connections
                 while (true)
                 {
-
                     Console.WriteLine("Waiting for a connection...");
 
                     // Accept Incoming client Socket connection 

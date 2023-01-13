@@ -31,7 +31,10 @@ namespace Server
             string receivedMessage = buildRequestMessage();
             Console.WriteLine(receivedMessage);
 
-
+            foreach (byte data in byteList)
+            {
+                Console.WriteLine(data);
+            }
             string[] req = receivedMessage.Split(boundary);
 
 
